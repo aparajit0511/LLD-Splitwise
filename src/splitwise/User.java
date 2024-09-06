@@ -13,7 +13,11 @@ public class User {
         this.phNumber = phNumber;
     }
 
+    public String getUserId(){
+        return userId;
+    }
     public void getUserDetails(){
         System.out.println("UserId " + userId + " " + name + " having email " + email + " with contact number " + phNumber);
     }
+
 }
