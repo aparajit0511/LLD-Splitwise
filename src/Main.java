@@ -30,9 +30,11 @@ public class Main {
 
 //        String result = logic.callSplitwise(user1,4,1000, users, EQUAL,null);
         List<Float> amounts = Arrays.asList(370.00f, 880.00f);
-        String result1 = logic.callSplitwise(user1,4,1000.00f,users,EQUAL,amounts);
-        System.out.println(result1);
+//        String result1 = logic.callSplitwise(user1,4,1000.00f,users,EQUAL,amounts);
+//        System.out.println(result1);
 
-//        String result2 = logic.callSplitwise(user1,4,1000.00f,users,EQUAL,amounts);
+        float[] percent ={40.00f,20.00f,20.00f,20.00f};
+        String result2 = logic.callSplitwise(user1,4,1000.00f,users,EQUAL,amounts,percent);
+        System.out.println(result2);
     }
 }

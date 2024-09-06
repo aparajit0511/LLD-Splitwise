@@ -12,7 +12,7 @@ public class LogicClass {
        this.userMap = userMap;
     }
 
-    public String callSplitwise(User user1,int total_users, float amount, List<User> users, Expense expense,List<Float> contri){
+    public String callSplitwise(User user1,int total_users, float amount, List<User> users, Expense expense,List<Float> contri,float[] percent){
         Map<String,Float> userShare = new HashMap<>();
         if (contri.size() > 0){
             int  i = 0;
@@ -22,6 +22,13 @@ public class LogicClass {
                 i += 1;
             }
 
+        }
+        if (percent.length > 0){
+            int i = 0;
+            for(User user:users){
+                userShare.put(user.getUserId(), (float) percent[i]);
+                i+= 1;
+            }
         }
         if(expense == Expense.EQUAL){
             float balance = amount / users.size()+1;
@@ -33,12 +40,17 @@ public class LogicClass {
         } else if (expense == Expense.EXACT) {
             for (String key:userMap.keySet()){
                 if(userShare.containsKey(key)){
-                    float balance = userShare.get(key) + userMap.get(key);
+                    float balance = (amount - userShare.get(key)) + userMap.get(key);
                     userMap.put(key,balance);
                 }
             }
         } else if (expense == Expense.PERCENT) {
-            
+            for (String key:userMap.keySet()){
+                if (userShare.containsKey(key)){
+                    float balance = (amount - (amount * (userShare.get(key) / 100))) + userMap.get(key);
+                    userMap.put(key,balance);
+                }
+            }
         }
 
         return "Call Splitwise";
