@@ -14,16 +14,16 @@ public class LogicClass {
 
     public String callSplitwise(User user1,int total_users, float amount, List<User> users, Expense expense,List<Float> contri,float[] percent){
         Map<String,Float> userShare = new HashMap<>();
-        if (contri.size() > 0){
+        if (contri != null && !contri.isEmpty()){
             int  i = 0;
-            System.out.println(users.size());
+
             for (User user:users){
                 userShare.put(user.getUserId(), contri.get(i));
                 i += 1;
             }
-
+            System.out.println("User Shares"+ userShare);
         }
-        if (percent.length > 0){
+        else if (percent != null){
             int i = 0;
             for(User user:users){
                 userShare.put(user.getUserId(), (float) percent[i]);
@@ -31,7 +31,7 @@ public class LogicClass {
             }
         }
         if(expense == Expense.EQUAL){
-            float balance = amount / users.size()+1;
+            float balance = amount / users.size();
             for (String key:userMap.keySet()){
                 if(!Objects.equals(key, user1.getUserId())){
                     userMap.put(key,balance);
@@ -47,16 +47,26 @@ public class LogicClass {
         } else if (expense == Expense.PERCENT) {
             for (String key:userMap.keySet()){
                 if (userShare.containsKey(key)){
-                    float balance = (amount - (amount * (userShare.get(key) / 100))) + userMap.get(key);
+                    float balance = (amount * (userShare.get(key) / 100)) + userMap.get(key);
                     userMap.put(key,balance);
                 }
             }
         }
+        System.out.println(userMap);
 
         return "Call Splitwise";
     }
 
-    public String showBalance(){
+    public String showBalance(String show){
+        if( userMap.values().stream().allMatch(value -> value == 0)){
+            return "No Balance";
+        }else{
+            for(Map.Entry<String,Float> entry:userMap.entrySet()){
+                String key = entry.getKey();
+                Float value = entry.getValue();
+                System.out.println("Balance for " + key + " is " + "Rs. " + value);
+            }
+        }
         return "";
     }
 
