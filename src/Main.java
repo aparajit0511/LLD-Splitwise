@@ -1,3 +1,4 @@
+import splitwise.InvalidAmountException;
 import splitwise.LogicClass;
 import splitwise.User;
 
@@ -6,7 +7,7 @@ import java.util.*;
 import static splitwise.Expense.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidAmountException {
 
         System.out.println("Hello world!");
 
@@ -31,14 +32,19 @@ public class Main {
         users.add(user3);
         users.add(user4);
 
-        String result = logic.callSplitwise(user1,4,2000, users, EQUAL,null,null);
-       System.out.println(logic.showBalance("show"));
+        logic.callSplitwise(user1,4,2000, users, EQUAL,null,null);
+        System.out.println(logic.showBalance("show"));
         List<User> users1 = new ArrayList<>();
         users1.add(user2);
         users1.add(user3);
         List<Float> amounts = Arrays.asList(370.00f, 880.00f);
-        String result1 = logic.callSplitwise(user1,4,1250.00f,users1,EXACT,amounts,null);
-        System.out.println(logic.showBalance("show"));
+        try{
+            logic.callSplitwise(user1,4,1250.00f,users1,EXACT,amounts,null);
+            System.out.println(logic.showBalance("show"));
+        }
+        catch (InvalidAmountException e){
+            System.out.println("Exception Alert-> " + e.getMessage());
+        }
 
         float[] percent ={40.00f,20.00f,20.00f,20.00f};
         List<User> users2 = new ArrayList<>();
@@ -46,8 +52,13 @@ public class Main {
         users2.add(user2);
         users2.add(user3);
         users2.add(user4);
-        String result2 = logic.callSplitwise(user1,4,1000.00f,users2,PERCENT,null,percent);
-        System.out.println(result2);
-        System.out.println(logic.showBalance("show"));
+        try{
+            logic.callSplitwise(user1,4,1000.00f,users2,PERCENT,null,percent);
+            System.out.println(logic.showBalance("show"));
+        }
+        catch (InvalidAmountException e){
+            System.out.println("Exception Alert-> " + e.getMessage());
+        }
+
     }
 }

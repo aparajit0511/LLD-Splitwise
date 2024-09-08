@@ -12,7 +12,7 @@ public class LogicClass {
        this.userMap = userMap;
     }
 
-    public String callSplitwise(User user1,int total_users, float amount, List<User> users, Expense expense,List<Float> contri,float[] percent){
+    public void callSplitwise(User user1,int total_users, float amount, List<User> users, Expense expense,List<Float> contri,float[] percent) throws InvalidAmountException {
         Map<String,Float> userShare = new HashMap<>();
         if (contri != null && !contri.isEmpty()){
             int  i = 0;
@@ -21,7 +21,6 @@ public class LogicClass {
                 userShare.put(user.getUserId(), contri.get(i));
                 i += 1;
             }
-            System.out.println("User Shares"+ userShare);
         }
         else if (percent != null){
             int i = 0;
@@ -31,6 +30,7 @@ public class LogicClass {
             }
         }
         if(expense == Expense.EQUAL){
+
             float balance = amount / users.size();
             for (String key:userMap.keySet()){
                 if(!Objects.equals(key, user1.getUserId())){
@@ -38,23 +38,35 @@ public class LogicClass {
                 }
             }
         } else if (expense == Expense.EXACT) {
-            for (String key:userMap.keySet()){
-                if(userShare.containsKey(key)){
-                    float balance = (amount - userShare.get(key)) + userMap.get(key);
-                    userMap.put(key,balance);
+                float sum = 0;
+                for (String key:userMap.keySet()){
+                    if(userShare.containsKey(key)){
+                        float checkbalance = (amount - userShare.get(key));
+                        float balance = (amount - userShare.get(key)) + userMap.get(key);
+                        sum += checkbalance;
+                        userMap.put(key,balance);
+                    }
                 }
-            }
+                if (sum != amount) {
+                    throw new InvalidAmountException("Please enter the correct amount");
+                }
+
         } else if (expense == Expense.PERCENT) {
+            float sum = 0;
             for (String key:userMap.keySet()){
                 if (userShare.containsKey(key)){
+                    float checkbalance = (amount * (userShare.get(key) / 100));
                     float balance = (amount * (userShare.get(key) / 100)) + userMap.get(key);
+                    float roundedValue = Math.round(checkbalance * 100) / 100f;
+                    sum += checkbalance;
                     userMap.put(key,balance);
                 }
             }
+            if(sum != amount){
+                throw new InvalidAmountException("Please enter the correct percent");
+            }
         }
-        System.out.println(userMap);
 
-        return "Call Splitwise";
     }
 
     public String showBalance(String show){
